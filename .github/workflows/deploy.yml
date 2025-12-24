@@ -21,7 +21,7 @@ env:
   INSTANCE_NAME: calculator-final-machine 
   SECURITY_GROUP_NAME: launch-wizard-8
   SECURITY_GROUP_DESCRIPTION: "launch-wizard-8 created via GitHub Actions"
-  VPC_ID: vpc-0d1bf1da3a43aa0bd  
+  VPC_ID: vpc-0d1bf1da3a43aa0bd
   EIP_ALLOCATION_ID: eipalloc-0a9b54f5384a1b5e0
   ECR_ROLE_NAME: ec2-ecr-role  
 
