@@ -1,10 +1,10 @@
-name: Deploy PrepyAI-API Docker App to AWS EC2
+name: Deploy Calculator Docker App to AWS EC2
 
 on:
   workflow_dispatch:
     inputs:
       name:
-        description: "Deploy the PrepyAI-API from Dev"
+        description: "Deploy the Calculator from Dev"
         default: "dev"
 
 permissions:
@@ -13,17 +13,17 @@ permissions:
 
 env:
   AWS_REGION: ap-south-1
-  ECR_REPOSITORY: prepyai-api         
-  CONTAINER_NAME: prepyaiapi
-  INSTANCE_TYPE: t2.small
-  AMI_ID: ami-008c931e579cb634d
-  KEY_NAME: PrepyAI_Key
-  INSTANCE_NAME: PrepyAI-API  
-  SECURITY_GROUP_NAME: launch-wizard-12
-  SECURITY_GROUP_DESCRIPTION: "launch-wizard-12 created via GitHub Actions"
-  VPC_ID: vpc-05856ec91cf9f1c22  
-  EIP_ALLOCATION_ID: eipalloc-0369957897ac5c174
-  ECR_ROLE_NAME: EC2ECRAccessRole  
+  ECR_REPOSITORY: calculator-repo
+  CONTAINER_NAME: calculator-container
+  INSTANCE_TYPE: t2.micro
+  AMI_ID: ami-0c398cb65a93047f2
+  KEY_NAME: calsi-key
+  INSTANCE_NAME: calculator-final-machine 
+  SECURITY_GROUP_NAME: launch-wizard-8
+  SECURITY_GROUP_DESCRIPTION: "launch-wizard-8 created via GitHub Actions"
+  VPC_ID: vpc-0d1bf1da3a43aa0bd  
+  EIP_ALLOCATION_ID: eipalloc-0a9b54f5384a1b5e0
+  ECR_ROLE_NAME: ec2-ecr-role  
 
 jobs:
   deploy:
@@ -39,7 +39,7 @@ jobs:
         with:
           audience: sts.amazonaws.com
           aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: arn:aws:iam::211125529910:role/prepyaiapi     
+          role-to-assume: arn:aws:iam::575327645493:role/ec2-admin-role     
 
       - name: Check if Security Group Exists
         id: check-security-group
@@ -77,7 +77,7 @@ jobs:
                 {"IpProtocol":"tcp","FromPort":22,"ToPort":22,"CidrIp":"0.0.0.0/0"},
                 {"IpProtocol":"tcp","FromPort":80,"ToPort":80,"CidrIp":"0.0.0.0/0"},
                 {"IpProtocol":"tcp","FromPort":443,"ToPort":443,"CidrIp":"0.0.0.0/0"},
-                {"IpProtocol":"tcp","FromPort":5000,"ToPort":5000,"CidrIp":"0.0.0.0/0"}
+                {"IpProtocol":"tcp","FromPort":9000,"ToPort":5000,"CidrIp":"0.0.0.0/0"}
               ]'
   
             for RULE in $(echo "$RULES" | jq -c '.[]'); do
@@ -128,7 +128,7 @@ jobs:
             --count 1 \
             --instance-type ${{ env.INSTANCE_TYPE }} \
             --key-name ${{ env.KEY_NAME }} \
-            --block-device-mappings '[{"DeviceName":"/dev/sda1","Ebs":{"Encrypted":false,"DeleteOnTermination":true,"SnapshotId":"snap-05ce578925a8cbc14","VolumeSize":30,"VolumeType":"gp2"}}]' \
+            --block-device-mappings '[{"DeviceName":"/dev/sda1","Ebs":{"Encrypted":false,"DeleteOnTermination":true,"SnapshotId":"snap-0631691c299b02084","VolumeSize":8,"VolumeType":"gp2"}}]' \
             --network-interfaces '[{"AssociatePublicIpAddress":true,"DeviceIndex":0,"Groups":["${{ env.security_group_id }}"]}]' \
             --iam-instance-profile Name=${{ env.ECR_ROLE_NAME }} \
             --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=${{ env.INSTANCE_NAME }}}]' \
