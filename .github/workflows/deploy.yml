@@ -51,8 +51,7 @@ jobs:
             
             if [ "$SECURITY_GROUP_ID" == "None" ]; then
               echo "Security group does not exist."
-              echo "security_group_exists=false" >> $GITHUB_ENV
-            else
+              echo "security_group_exists=false" >> $GITHUB_ENV else
               echo "Security group exists with ID $SECURITY_GROUP_ID."
               echo "security_group_exists=true" >> $GITHUB_ENV
               echo "security_group_id=$SECURITY_GROUP_ID" >> $GITHUB_ENV
