@@ -28,7 +28,7 @@ env:
 jobs:
   deploy:
     name: Deploy to AWS EC2
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  
 
     steps:
       - name: Checkout
@@ -39,7 +39,7 @@ jobs:
         with:
           audience: sts.amazonaws.com
           aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: arn:aws:iam::575327645493:role/ec2-admin-role     
+          role-to-assume: arn:aws:iam::575327645493:role/ec2-admin-role 
 
       - name: Check if Security Group Exists
         id: check-security-group
@@ -51,7 +51,8 @@ jobs:
             
             if [ "$SECURITY_GROUP_ID" == "None" ]; then
               echo "Security group does not exist."
-              echo "security_group_exists=false" >> $GITHUB_ENV else
+              echo "security_group_exists=false" >> $GITHUB_ENV
+            else
               echo "Security group exists with ID $SECURITY_GROUP_ID."
               echo "security_group_exists=true" >> $GITHUB_ENV
               echo "security_group_id=$SECURITY_GROUP_ID" >> $GITHUB_ENV
@@ -236,16 +237,16 @@ jobs:
 
           sudo rm -rf /home/ubuntu/.env
 
-          
-          echo "HOST=${{ secrets.HOST }}" >> .env
-          echo "USER=${{ secrets.USER }}" >> .env
-          echo "EC2_SSH_PRIVATE_KEY=${{ secrets.EC2_SSH_PRIVATE_KEY }}" >> .env
+          echo "HOST=${{ secrets.HOST }}" >> /home/ubuntu/.env
+          echo "USER=${{ secrets.USER }}" >> /home/ubuntu/.env
+          echo "EC2_SSH_PRIVATE_KEY=${{ secrets.EC2_SSH_PRIVATE_KEY}}" >> /home/ubuntu/.env
 
           chmod 600 /home/ubuntu/.env
         
-          sudo tee /etc/systemd/system/$CONTAINER_NAME.service > /dev/null << SERVICE
+          sudo tee /etc/systemd/system/$CONTAINER_NAME.service > /dev/null << 'EOF'
+          
           [Unit]
-          Description=Calculator API Container 
+          Description=calculator-final Container 
           After=network.target docker.service
           Requires=docker.service
 
