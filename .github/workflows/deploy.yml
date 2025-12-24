@@ -246,7 +246,7 @@ jobs:
           sudo tee /etc/systemd/system/$CONTAINER_NAME.service > /dev/null << 'EOF'
           
           [Unit]
-          Description=calculator-final Container 
+          Description=calculator-api Container 
           After=network.target docker.service
           Requires=docker.service
 
